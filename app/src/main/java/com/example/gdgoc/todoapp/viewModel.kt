@@ -1,30 +1,33 @@
 package com.example.gdgoc.todoapp
 
-import androidx.compose.runtime.mutableStateListOf
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 
-class TaskViewModel : ViewModel() {
-    private var _tasks = mutableStateListOf<Task>()
-    val tasks: List<Task> get() = _tasks
+class TodoViewModel(application: Application) : AndroidViewModel(application) {
+    private val repository: TodoRepository
 
-    private var taskIdCounter = 0
+    val allTodos = TodoDatabase.getDatabase(application)
+        .todoDao()
+        .getAllTodos()
+        .asLiveData()
 
-    fun addTask(title: String){
-        if(title.isNotEmpty()){
-            _tasks.add(
-                Task(
-                id = taskIdCounter++,
-                title = title
-            )
-            )
-        }
+    init {
+        val todoDao = TodoDatabase.getDatabase(application).todoDao()
+        repository = TodoRepository(todoDao)
     }
 
-    fun updateTask(id: Int, newTitle: String){
-        _tasks.find {it.id == id}?.title = newTitle
+    fun insert(todo: Todo) = viewModelScope.launch {
+        repository.insert(todo)
     }
 
-    fun deleteTask(id: Int){
-        _tasks.removeIf {it.id == id}
+    fun update(todo: Todo) = viewModelScope.launch {
+        repository.update(todo)
+    }
+
+    fun delete(todo: Todo) = viewModelScope.launch {
+        repository.delete(todo)
     }
 }
