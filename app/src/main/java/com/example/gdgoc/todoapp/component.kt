@@ -34,12 +34,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.room.Delete
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskList(task: Task, viewModel: TaskViewModel){
+fun TaskList(todo: Todo, onUpdate: (newTodo: String) -> Unit, onDelete: () -> Unit){
     var isEditing by remember {mutableStateOf(false)}
-    var editedTitle by remember { mutableStateOf(task.title) }
+    var editedTitle by remember(todo.id) { mutableStateOf(todo.title) }
 
     if (isEditing) {
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -59,7 +60,7 @@ fun TaskList(task: Task, viewModel: TaskViewModel){
 
             Button(
                 onClick = {
-                    viewModel.updateTask(task.id, editedTitle)
+                    onUpdate(editedTitle)
                     isEditing = false
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6DADE8),
@@ -79,7 +80,7 @@ fun TaskList(task: Task, viewModel: TaskViewModel){
     } else {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = task.title,
+                text = todo.title,
                 modifier = Modifier.weight(1f),
                 fontSize = 18.sp
             )
@@ -87,7 +88,7 @@ fun TaskList(task: Task, viewModel: TaskViewModel){
                 IconButton(onClick = { isEditing = true }) {
                     Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit")
                 }
-                IconButton(onClick = { viewModel.deleteTask(task.id) }) {
+                IconButton(onClick = onDelete) {
                     Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete")
                 }
             }

@@ -1,5 +1,6 @@
 package com.example.gdgoc.todoapp
 
+import android.app.Application
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,6 +26,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -32,17 +34,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.viewModelFactory
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ToDoApp(viewModel: TaskViewModel){
-    var newTask by remember { mutableStateOf("") }
+fun ToDoApp(){
+    val context = LocalContext.current
+    // Meng-cast context menjadi Application (pastikan context ini adalah application context)
+    val application = context.applicationContext as Application
+    // Menggunakan factory untuk mendapatkan TodoViewModel
+    val todoViewModel: TodoViewModel = viewModel(factory = TodoViewModelFactory(application))
+
+    val todos by todoViewModel.allTodos.observeAsState(emptyList())
+    var text by remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
 
     BackHandler {
@@ -71,8 +84,8 @@ fun ToDoApp(viewModel: TaskViewModel){
                 verticalAlignment = Alignment.CenterVertically)
             {
                 OutlinedTextField(
-                    value = newTask,
-                    onValueChange = { newTask = it },
+                    value = text,
+                    onValueChange = { text = it },
                     placeholder = {Text("Add Task")},
                     modifier = Modifier.weight(1f),
                     textStyle = TextStyle(fontSize = 18.sp),
@@ -85,8 +98,10 @@ fun ToDoApp(viewModel: TaskViewModel){
                 Spacer(modifier = Modifier.width(16.dp))
                 Button(
                     onClick = {
-                        viewModel.addTask(newTask)
-                        newTask = ""
+                        if(text.isNotBlank()){
+                            todoViewModel.insert(Todo(title = text))
+                            text = ""
+                        }
                         focusManager.clearFocus()
                     },
                     colors = ButtonDefaults.buttonColors(
@@ -107,8 +122,13 @@ fun ToDoApp(viewModel: TaskViewModel){
             Spacer(modifier = Modifier.height(16.dp))
 
             LazyColumn(modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)) {
-                items(viewModel.tasks) { task ->
-                    TaskList(task = task, viewModel = viewModel)
+                items(todos) { todo ->
+                    TaskList(
+                        todo = todo,
+                        onUpdate = {newTodo ->
+                            val updatedTodo = todo.copy(title = newTodo)
+                            todoViewModel.update(updatedTodo)},
+                        onDelete = {todoViewModel.delete(todo)})
                     HorizontalDivider(
                         color = Color.Gray,
                         thickness = 1.dp,
