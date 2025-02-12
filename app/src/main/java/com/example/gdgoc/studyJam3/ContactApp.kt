@@ -1,4 +1,4 @@
-package com.example.gdgoc
+package com.example.gdgoc.studyJam3
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -42,7 +42,7 @@ data class Contact(val id: Int, val name: String)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContactApp() {
+fun ContactApptes() {
     // State untuk input teks, daftar kontak, dan filter yang sedang aktif
     val (contactInput, setContactInput) = remember { mutableStateOf("") }
     val (contacts, setContacts) = remember { mutableStateOf(listOf<Contact>()) }
@@ -131,7 +131,7 @@ fun ContactApp() {
                     contacts.filter { it.name.startsWith(selectedFilter, ignoreCase = true) }
                 }
                 items(filteredContacts, key = { it.id }) { contact ->
-                    ContactItem(contact = contact)
+//                    ContactItem(contact = contact)
                 }
             }
         }
@@ -158,7 +158,7 @@ fun FilterChip(label: String, isSelected: Boolean, onClick: () -> Unit) {
 }
 
 @Composable
-fun ContactItem(contact: Contact) {
+fun ContactItem(contact: com.example.gdgoc.Contact) {
     // Komponen untuk menampilkan satu item kontak
     Card(
         modifier = Modifier
