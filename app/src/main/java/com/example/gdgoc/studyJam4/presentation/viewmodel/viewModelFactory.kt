@@ -1,4 +1,4 @@
-package com.example.gdgoc.todoapp
+package com.example.gdgoc.studyJam4.presentation.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.ViewModel

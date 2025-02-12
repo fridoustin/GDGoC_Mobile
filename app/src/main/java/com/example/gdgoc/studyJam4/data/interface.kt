@@ -1,4 +1,4 @@
-package com.example.gdgoc.todoapp
+package com.example.gdgoc.studyJam4.data
 
 import androidx.room.Dao
 import androidx.room.Delete

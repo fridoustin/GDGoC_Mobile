@@ -1,4 +1,4 @@
-package com.example.gdgoc.todoapp
+package com.example.gdgoc.studyJam4.presentation.ui
 
 import android.app.Application
 import androidx.activity.compose.BackHandler
@@ -20,7 +20,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -33,16 +32,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.gdgoc.studyJam4.presentation.components.TaskList
+import com.example.gdgoc.studyJam4.data.Todo
+import com.example.gdgoc.studyJam4.presentation.viewmodel.TodoViewModel
+import com.example.gdgoc.studyJam4.presentation.viewmodel.TodoViewModelFactory
 
 
 @OptIn(ExperimentalMaterial3Api::class)
