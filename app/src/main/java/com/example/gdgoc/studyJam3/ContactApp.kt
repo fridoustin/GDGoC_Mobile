@@ -42,7 +42,7 @@ data class Contact(val id: Int, val name: String)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContactApptes() {
+fun ContactApp() {
     // State untuk input teks, daftar kontak, dan filter yang sedang aktif
     val (contactInput, setContactInput) = remember { mutableStateOf("") }
     val (contacts, setContacts) = remember { mutableStateOf(listOf<Contact>()) }
@@ -131,7 +131,7 @@ fun ContactApptes() {
                     contacts.filter { it.name.startsWith(selectedFilter, ignoreCase = true) }
                 }
                 items(filteredContacts, key = { it.id }) { contact ->
-//                    ContactItem(contact = contact)
+                    ContactItem(contact = contact)
                 }
             }
         }
@@ -158,7 +158,7 @@ fun FilterChip(label: String, isSelected: Boolean, onClick: () -> Unit) {
 }
 
 @Composable
-fun ContactItem(contact: com.example.gdgoc.Contact) {
+fun ContactItem(contact: Contact) {
     // Komponen untuk menampilkan satu item kontak
     Card(
         modifier = Modifier
